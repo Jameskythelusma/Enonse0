@@ -1,0 +1,69 @@
+# kreye enstans langaj pour chaque lang
+
+kreyol = langaj.objects.create(non="Kreyol")
+franse = langaj.objects.create(non="Franse")
+angle = langaj.objects.create(non="Angle")
+potige = langaj.objects.create(non="Pòtige")
+mandaren = langaj.objects.create(non="Mandaren")
+
+# kreye enstans kontinan pour chaque kontina
+amerik = kontinan.objects.create(non="Amerik")
+ewop = kontinan.objects.create(non="Ewòp")
+afrik = kontinan.objects.create(non="Afrik")
+azi = kontinan.objects.create(non="Azi")
+
+
+
+#anrejistreman peyi
+ayiti = peyi.objects.create(
+    non="Ayiti",
+    kontinan=amerik,
+    popilasyon=11260000,
+    sipefisi=27750
+)
+ayiti.langaj.set([kreyol, franse])
+
+kanada = peyi.objects.create(
+    non="Kanada",
+    kontinan=ewop,
+    popilasyon=37590000,
+    sipefisi=9985000
+)
+kanada.langaj.set([franse, angle])
+
+frans = peyi.objects.create(
+    non="Frans",
+    kontinan=ewop,
+    popilasyon=67060000,
+    sipefisi=643801
+)
+frans.langaj.set([franse])
+
+potigal = peyi.objects.create(
+    non="Pòtigal",
+    kontinan=ewop,
+    popilasyon=10280000,
+    sipefisi=92212
+)
+potigal.langaj.set([potige])
+
+chin = peyi.objects.create(
+    non="Chin",
+    kontinan=azi,
+    popilasyon=1398000000,
+    sipefisi=9597000
+)
+chin.langaj.set([mandaren])
+
+#reket: Afiche tout peyi ki pale plis ke yon lang
+from django.db import models
+peyi_plizye_langaj = peyi.objects.annotate(konte_lang=models.Count('langaj')).filter(konte_lang__gt=1)
+#-----------------------
+peyi_yon_langaj = peyi.objects.annotate(konte_lang=models.Count('langaj')).filter(konte_lang=1)
+#--------------------------
+peyi_plis_popilasyon = peyi.objects.order_by('-popilasyon')
+#---------------
+all_kontinan = kontinan.objects.all()
+for kontinan in all_kontinan:
+    pi_gwo_sipefisi= kontinan.peyi_set.order_by('-sipefisi').first()
+    print(f"kontinan: {kontinan.non}, pi gwo sipefisi: {pi_gwo_sipefisi.non}")
